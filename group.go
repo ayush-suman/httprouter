@@ -3,6 +3,8 @@
 
 package httprouter
 
+import "net/http"
+
 type RouterGroup struct {
 	router *Router
 	path string
@@ -22,6 +24,10 @@ func NewGroup(path string) *RouterGroup {
 		Router: New(),
 		path: path
 	}	
+}
+
+func (r *RouterGroup) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	r.router.ServeHTTP(w, r)
 }
 
 func (r *RouterGroup) NewGroup(path string) *RouterGroup {
