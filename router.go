@@ -133,6 +133,19 @@ func (ps Params) MatchedRoutePath() string {
 	return ps.ByName(MatchedRoutePathParam)
 }
 
+type IRouter interface {
+	GET(string, Handle)
+	HEAD(string, Handle)
+	OPTIONS(string, Handle)
+	POST(string, Handle) 
+	PUT(string, Handle) 
+	PATCH(string, Handle) 
+	DELETE(string, Handle)
+	Handle(string, string, Handle)
+	Handler(string, string, http.Handler)
+	HandlerFunc(string, string, http.HandlerFunc) 
+}
+
 // Router is a http.Handler which can be used to dispatch requests to different
 // handler functions via configurable routes
 type Router struct {
