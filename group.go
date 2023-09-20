@@ -22,7 +22,7 @@ func NewGroup(path string) *RouterGroup {
 
 	return &RouterGroup {
 		Router: New(),
-		path: path
+		path: path,
 	}	
 }
 
