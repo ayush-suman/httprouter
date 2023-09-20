@@ -134,6 +134,7 @@ func (ps Params) MatchedRoutePath() string {
 }
 
 type IRouter interface {
+	http.Handler
 	GET(string, Handle)
 	HEAD(string, Handle)
 	OPTIONS(string, Handle)
@@ -143,7 +144,7 @@ type IRouter interface {
 	DELETE(string, Handle)
 	Handle(string, string, Handle)
 	Handler(string, string, http.Handler)
-	HandlerFunc(string, string, http.HandlerFunc) 
+	HandlerFunc(string, string, http.HandlerFunc)
 }
 
 // Router is a http.Handler which can be used to dispatch requests to different
