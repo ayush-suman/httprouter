@@ -244,8 +244,8 @@ func (r *Router) NewGroup(path string) *RouterGroup {
 	}
 
 	return &RouterGroup {
-		Router: r,
-		path: path
+		router: r,
+		path: path,
 	}	
 }
 
