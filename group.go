@@ -31,48 +31,48 @@ func (g *RouterGroup) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g *RouterGroup) NewGroup(path string) *RouterGroup {
-	return g.router.NewGroup(r.subPath(path))
+	return g.router.NewGroup(g.subPath(path))
 }
 
-func (g *RouteGroup) Handle(method, path string, handle Handle) {
-	g.router.Handle(method, r.subPath(path), handle)
+func (g *RouterGroup) Handle(method, path string, handle Handle) {
+	g.router.Handle(method, g.subPath(path), handle)
 }
 
-func (g *RouteGroup) Handler(method, path string, handler http.Handler) {
-	g.router.Handler(method, r.subPath(path), handler)
+func (g *RouterGroup) Handler(method, path string, handler http.Handler) {
+	g.router.Handler(method, g.subPath(path), handler)
 }
 
-func (g *RouteGroup) HandlerFunc(method, path string, handler http.HandlerFunc) {
-	g.router.HandlerFunc(method, r.subPath(path), handler)
+func (g *RouterGroup) HandlerFunc(method, path string, handler http.HandlerFunc) {
+	g.router.HandlerFunc(method, g.subPath(path), handler)
 }
 
-func (g *RouteGroup) GET(path string, handle Handle) {
+func (g *RouterGroup) GET(path string, handle Handle) {
 	g.Handle("GET", path, handle)
 }
-func (g *RouteGroup) HEAD(path string, handle Handle) {
+func (g *RouterGroup) HEAD(path string, handle Handle) {
 	g.Handle("HEAD", path, handle)
 }
-func (g *RouteGroup) OPTIONS(path string, handle Handle) {
+func (g *RouterGroup) OPTIONS(path string, handle Handle) {
 	g.Handle("OPTIONS", path, handle)
 }
 
-func (g *RouteGroup) POST(path string, handle Handle) {
+func (g *RouterGroup) POST(path string, handle Handle) {
 	g.Handle("POST", path, handle)
 }
 
-func (g *RouteGroup) PUT(path string, handle Handle) {
+func (g *RouterGroup) PUT(path string, handle Handle) {
 	g.Handle("PUT", path, handle)
 }
 
-func (g *RouteGroup) PATCH(path string, handle Handle) {
+func (g *RouterGroup) PATCH(path string, handle Handle) {
 	g.Handle("PATCH", path, handle)
 }
 
-func (g *RouteGroup) DELETE(path string, handle Handle) {
+func (g *RouterGroup) DELETE(path string, handle Handle) {
 	g.Handle("DELETE", path, handle)
 }
 
-func (g *RouteGroup) subPath(path string) string {
+func (g *RouterGroup) subPath(path string) string {
 	if path[0] != '/' {
 		panic("path must start with a '/'")
 	}
