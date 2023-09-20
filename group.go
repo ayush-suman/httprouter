@@ -21,56 +21,60 @@ func NewGroup(path string) *RouterGroup {
 	}
 
 	return &RouterGroup {
-		Router: New(),
+		router: New(),
 		path: path,
 	}	
 }
 
-func (r *RouterGroup) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.router.ServeHTTP(w, r)
+func (g *RouterGroup) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	g.router.ServeHTTP(w, r)
 }
 
-func (r *RouterGroup) NewGroup(path string) *RouterGroup {
-	return r.router.NewGroup(r.subPath(path))
+func (g *RouterGroup) NewGroup(path string) *RouterGroup {
+	return g.router.NewGroup(r.subPath(path))
 }
 
-func (r *RouteGroup) Handle(method, path string, handle Handle) {
-	r.router.Handle(method, r.subPath(path), handle)
+func (g *RouteGroup) Handle(method, path string, handle Handle) {
+	g.router.Handle(method, r.subPath(path), handle)
 }
 
-func (r *RouteGroup) Handler(method, path string, handler http.Handler) {
-	r.router.Handler(method, r.subPath(path), handler)
+func (g *RouteGroup) Handler(method, path string, handler http.Handler) {
+	g.router.Handler(method, r.subPath(path), handler)
 }
 
-func (r *RouteGroup) HandlerFunc(method, path string, handler http.HandlerFunc) {
-	r.router.HandlerFunc(method, r.subPath(path), handler)
+func (g *RouteGroup) HandlerFunc(method, path string, handler http.HandlerFunc) {
+	g.router.HandlerFunc(method, r.subPath(path), handler)
 }
 
-func (r *RouteGroup) GET(path string, handle Handle) {
-	r.Handle("GET", path, handle)
+func (g *RouteGroup) GET(path string, handle Handle) {
+	g.Handle("GET", path, handle)
 }
-func (r *RouteGroup) HEAD(path string, handle Handle) {
-	r.Handle("HEAD", path, handle)
+func (g *RouteGroup) HEAD(path string, handle Handle) {
+	g.Handle("HEAD", path, handle)
 }
-func (r *RouteGroup) OPTIONS(path string, handle Handle) {
-	r.Handle("OPTIONS", path, handle)
-}
-func (r *RouteGroup) POST(path string, handle Handle) {
-	r.Handle("POST", path, handle)
-}
-func (r *RouteGroup) PUT(path string, handle Handle) {
-	r.Handle("PUT", path, handle)
-}
-func (r *RouteGroup) PATCH(path string, handle Handle) {
-	r.Handle("PATCH", path, handle)
-}
-func (r *RouteGroup) DELETE(path string, handle Handle) {
-	r.Handle("DELETE", path, handle)
+func (g *RouteGroup) OPTIONS(path string, handle Handle) {
+	g.Handle("OPTIONS", path, handle)
 }
 
-func (r *RouteGroup) subPath(path string) string {
+func (g *RouteGroup) POST(path string, handle Handle) {
+	g.Handle("POST", path, handle)
+}
+
+func (g *RouteGroup) PUT(path string, handle Handle) {
+	g.Handle("PUT", path, handle)
+}
+
+func (g *RouteGroup) PATCH(path string, handle Handle) {
+	g.Handle("PATCH", path, handle)
+}
+
+func (g *RouteGroup) DELETE(path string, handle Handle) {
+	g.Handle("DELETE", path, handle)
+}
+
+func (g *RouteGroup) subPath(path string) string {
 	if path[0] != '/' {
 		panic("path must start with a '/'")
 	}
-	return r.path + path
+	return g.path + path
 }
