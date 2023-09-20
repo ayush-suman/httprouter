@@ -174,7 +174,7 @@ type Router struct {
 	HandleMethodNotAllowed bool
 
 	// If enabled, the router automatically replies to OPTIONS requests.
-	// Custom OPTIONS handlers take priority over automatic replies.
+// Custom OPTIONS handlers take priority over automatic replies.
 	HandleOPTIONS bool
 
 	// An optional http.Handler that is called on automatic OPTIONS requests.
@@ -217,6 +217,22 @@ func New() *Router {
 		HandleMethodNotAllowed: true,
 		HandleOPTIONS:          true,
 	}
+}
+
+func (r *Router) NewGroup(path string) *RouterGroup {
+		if path[0] != '/' {
+		panic("path must begin with '/' in path '" + path + "'")
+	}
+
+	//Strip traling / (if present) as all added sub paths must start with a /
+	if path[len(path)-1] == '/' {
+		path = path[:len(path)-1]
+	}
+
+	return &RouterGroup {
+		Router: r,
+		path: path
+	}	
 }
 
 func (r *Router) getParams() *Params {
