@@ -3,7 +3,6 @@
 package httprouter
 
 import (
-	"context"
 	"net/http"
 )
 
