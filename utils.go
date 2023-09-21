@@ -10,7 +10,7 @@ func applyMiddlewares(handle Handle, middlewares []Middleware, hasMiddlewares bo
 		return handle
 	}
 
-	for i := len(middlewares) - 1; i >= 0; i++ {
+	for i := len(middlewares) - 1; i >= 0; i-- {
 		handle = middlewares[i](handle)
 	}
 	return handle
