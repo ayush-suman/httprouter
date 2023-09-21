@@ -217,6 +217,11 @@ type Router struct {
 	// The handler can be used to keep your server from crashing because of
 	// unrecovered panics.
 	PanicHandler func(http.ResponseWriter, *http.Request, interface{})
+
+	// List of middlewares executed in order on request
+	middlewares []Middleware
+
+	HasMiddlewares bool
 }
 
 // Make sure the Router conforms with the http.Handler interface
@@ -230,7 +235,14 @@ func New() *Router {
 		RedirectFixedPath:      true,
 		HandleMethodNotAllowed: true,
 		HandleOPTIONS:          true,
+		middlewares:			[]Middleware{},
+		HasMiddlewares: 		false,	
 	}
+}
+
+func (r *Router) AddMiddlewares(middlewares []Middleware) {
+	r.middlewares = append(r.middlewares, middlewares...)
+	r.HasMiddlewares = true
 }
 
 func (r *Router) NewGroup(path string) *RouterGroup {
@@ -246,6 +258,8 @@ func (r *Router) NewGroup(path string) *RouterGroup {
 	return &RouterGroup {
 		router: r,
 		path: path,
+		middlewares: []Middleware{},
+		HasMiddlewares: false,
 	}	
 }
 
@@ -274,41 +288,6 @@ func (r *Router) saveMatchedRoutePath(path string, handle Handle) Handle {
 			handle(w, req, ps)
 		}
 	}
-}
-
-// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
-func (r *Router) GET(path string, handle Handle) {
-	r.Handle(http.MethodGet, path, handle)
-}
-
-// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
-func (r *Router) HEAD(path string, handle Handle) {
-	r.Handle(http.MethodHead, path, handle)
-}
-
-// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
-func (r *Router) OPTIONS(path string, handle Handle) {
-	r.Handle(http.MethodOptions, path, handle)
-}
-
-// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
-func (r *Router) POST(path string, handle Handle) {
-	r.Handle(http.MethodPost, path, handle)
-}
-
-// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
-func (r *Router) PUT(path string, handle Handle) {
-	r.Handle(http.MethodPut, path, handle)
-}
-
-// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
-func (r *Router) PATCH(path string, handle Handle) {
-	r.Handle(http.MethodPatch, path, handle)
-}
-
-// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
-func (r *Router) DELETE(path string, handle Handle) {
-	r.Handle(http.MethodDelete, path, handle)
 }
 
 // Handle registers a new request handle with the given path and method.
@@ -369,22 +348,48 @@ func (r *Router) Handle(method, path string, handle Handle) {
 // request handle.
 // The Params are available in the request context under ParamsKey.
 func (r *Router) Handler(method, path string, handler http.Handler) {
-	r.Handle(method, path,
-		func(w http.ResponseWriter, req *http.Request, p Params) {
-			if len(p) > 0 {
-				ctx := req.Context()
-				ctx = context.WithValue(ctx, ParamsKey, p)
-				req = req.WithContext(ctx)
-			}
-			handler.ServeHTTP(w, req)
-		},
-	)
+	r.Handle(method, path, applyMiddlewares(HandleFromHandler(handler), r.middlewares, r.HasMiddlewares))
 }
 
 // HandlerFunc is an adapter which allows the usage of an http.HandlerFunc as a
 // request handle.
 func (r *Router) HandlerFunc(method, path string, handler http.HandlerFunc) {
 	r.Handler(method, path, handler)
+}
+
+// GET is a shortcut for router.Handle(http.MethodGet, path, handle)
+func (r *Router) GET(path string, handle Handle) {
+	r.Handle(http.MethodGet, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// HEAD is a shortcut for router.Handle(http.MethodHead, path, handle)
+func (r *Router) HEAD(path string, handle Handle) {
+	r.Handle(http.MethodHead, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// OPTIONS is a shortcut for router.Handle(http.MethodOptions, path, handle)
+func (r *Router) OPTIONS(path string, handle Handle) {
+	r.Handle(http.MethodOptions, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// POST is a shortcut for router.Handle(http.MethodPost, path, handle)
+func (r *Router) POST(path string, handle Handle) {
+	r.Handle(http.MethodPost, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// PUT is a shortcut for router.Handle(http.MethodPut, path, handle)
+func (r *Router) PUT(path string, handle Handle) {
+	r.Handle(http.MethodPut, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// PATCH is a shortcut for router.Handle(http.MethodPatch, path, handle)
+func (r *Router) PATCH(path string, handle Handle) {
+	r.Handle(http.MethodPatch, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
+}
+
+// DELETE is a shortcut for router.Handle(http.MethodDelete, path, handle)
+func (r *Router) DELETE(path string, handle Handle) {
+	r.Handle(http.MethodDelete, path, applyMiddlewares(handle, r.middlewares, r.HasMiddlewares))
 }
 
 // ServeFiles serves files from the given file system root.
