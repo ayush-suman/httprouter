@@ -11,6 +11,7 @@ type IRouter interface {
 	PUT(string, Handle) 
 	PATCH(string, Handle) 
 	DELETE(string, Handle)
+	CONNECT(string, Handle)
 	Handle(string, string, Handle)
 	Handler(string, string, http.Handler)
 	HandlerFunc(string, string, http.HandlerFunc)

@@ -380,6 +380,10 @@ func (r *Router) DELETE(path string, handle Handle) {
 	r.Handle(http.MethodDelete, path, handle)
 }
 
+func (r *Router) CONNECT(path string, handle Handle) {
+	r.Handle(http.MethodConnect, path, handle)
+}
+
 // ServeFiles serves files from the given file system root.
 // The path must end with "/*filepath", files are then served from the local
 // path /defined/root/dir/*filepath.

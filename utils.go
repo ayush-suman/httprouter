@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+// func addMiddleware(handle Handle, middlewares []Middleware, index int) Handle {
+// 	if index == len(middlewares) - 1 {
+// 		return middlewares[index](handle)
+// 	}
+// 	return middlewares[index](addMiddleware(handle, middlewares, index + 1))
+// }
+
 func applyMiddlewares(handle Handle, middlewares []Middleware, hasMiddlewares bool) Handle {
 	if !hasMiddlewares {
 		return handle
@@ -14,7 +21,10 @@ func applyMiddlewares(handle Handle, middlewares []Middleware, hasMiddlewares bo
 		handle = middlewares[i](handle)
 	}
 	return handle
+
 }
+
+
 
 func HandleFromHandler(handler http.Handler) Handle {
 	return func(w http.ResponseWriter, req *http.Request, ps Params) {
