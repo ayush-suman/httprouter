@@ -57,29 +57,33 @@ func (g *RouterGroup) HandlerFunc(method, path string, handler http.HandlerFunc)
 }
 
 func (g *RouterGroup) GET(path string, handle Handle) {
-	g.Handle("GET", path, handle)
+	g.Handle(http.MethodGet, path, handle)
 }
 func (g *RouterGroup) HEAD(path string, handle Handle) {
-	g.Handle("HEAD", path, handle)
+	g.Handle(http.MethodHead, path, handle)
 }
 func (g *RouterGroup) OPTIONS(path string, handle Handle) {
-	g.Handle("OPTIONS", path, handle)
+	g.Handle(http.MethodOptions, path, handle)
 }
 
 func (g *RouterGroup) POST(path string, handle Handle) {
-	g.Handle("POST", path, handle)
+	g.Handle(http.MethodPost, path, handle)
 }
 
 func (g *RouterGroup) PUT(path string, handle Handle) {
-	g.Handle("PUT", path, handle)
+	g.Handle(http.MethodPut, path, handle)
 }
 
 func (g *RouterGroup) PATCH(path string, handle Handle) {
-	g.Handle("PATCH", path, handle)
+	g.Handle(http.MethodPatch, path, handle)
 }
 
 func (g *RouterGroup) DELETE(path string, handle Handle) {
-	g.Handle("DELETE", path, handle, )
+	g.Handle(http.MethodDelete, path, handle)
+}
+
+func (g *RouterGroup) CONNECT(path string, handle Handle) {
+	g.Handle(http.MethodConnect, path, handle)
 }
 
 func (g *RouterGroup) subPath(path string) string {
