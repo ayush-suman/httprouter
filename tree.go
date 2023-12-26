@@ -5,6 +5,7 @@
 package httprouter
 
 import (
+	"log"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -386,7 +387,6 @@ walk: // Outer loop for walking the tree
 						tsr = (len(path) == end+1)
 						return
 					}
-
 					if handle = n.handle; handle != nil {
 						return
 					} else if len(n.children) == 1 {
@@ -412,7 +412,6 @@ walk: // Outer loop for walking the tree
 							Value: path,
 						}
 					}
-
 					handle = n.handle
 					return
 
